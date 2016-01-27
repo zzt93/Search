@@ -1,4 +1,4 @@
-package pinyin;
+package inputMethod.data;
 
 /**
  * Created by zzt on 1/26/16.

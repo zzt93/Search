@@ -1,4 +1,4 @@
-package pinyin;
+package inputMethod;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
