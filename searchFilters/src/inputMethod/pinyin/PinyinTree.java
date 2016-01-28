@@ -1,6 +1,5 @@
-package inputMethod;
+package inputMethod.pinyin;
 
-import inputMethod.graph.SyllableGraph;
 import util.MyIn;
 import util.TreeIterator;
 import util.TrieTree;
@@ -46,16 +45,20 @@ public class PinyinTree {
         return all.iterator();
     }
 
-    public static boolean isValidSinglePinyin(String input) {
+    public static SinglePinyinType isValidSinglePinyin(String input) {
         TreeIterator<Character> iterator = all.iterator();
         for (char c : input.toCharArray()) {
             if (iterator.hasChild(c)) {
                 iterator.move(c);
             } else {
-                return false;
+                return SinglePinyinType.INVALID;
             }
         }
-        return iterator.canExit();
+        return iterator.canExit() ? SinglePinyinType.VALID : SinglePinyinType.NEED_MORE;
+    }
+
+    public enum SinglePinyinType {
+        VALID, NEED_MORE, INVALID
     }
 
     @Override

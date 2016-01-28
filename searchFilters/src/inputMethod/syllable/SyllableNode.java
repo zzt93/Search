@@ -1,4 +1,4 @@
-package inputMethod.graph;
+package inputMethod.syllable;
 
 import java.util.ArrayList;
 
@@ -14,8 +14,8 @@ public class SyllableNode {
      * start of syllable is store in the another side of edge
      */
     private int end;
+    private boolean canExit = false;
     private ArrayList<SyllableEdge> out = new ArrayList<>();
-    private ArrayList<SyllableEdge> in = new ArrayList<>();
 
     public SyllableNode(int end) {
         this.end = end;
@@ -25,19 +25,30 @@ public class SyllableNode {
         return end;
     }
 
-    public ArrayList<SyllableEdge> getIn() {
-        return in;
+    public ArrayList<SyllableEdge> getOut() {
+        return out;
     }
 
     public void addOut(SyllableEdge edge) {
         out.add(edge);
     }
 
-    public void addIn(SyllableEdge edge) {
-        in.add(edge);
+    public boolean isCanExit() {
+        return canExit;
+    }
+
+    public void setCanExit(boolean canExit) {
+        this.canExit = canExit;
     }
 
     public boolean noOutEdge() {
         return out.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        return "SyllableNode{" +
+                "end=" + end +
+                '}';
     }
 }

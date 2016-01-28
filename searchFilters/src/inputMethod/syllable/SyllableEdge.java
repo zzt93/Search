@@ -1,4 +1,4 @@
-package inputMethod.graph;
+package inputMethod.syllable;
 
 /**
  * Created by zzt on 1/27/16.
@@ -8,7 +8,8 @@ package inputMethod.graph;
  */
 public class SyllableEdge {
 
-    private String pinyin;
+    private double length;
+
     private SyllableNode from;
     private SyllableNode to;
 
@@ -17,15 +18,15 @@ public class SyllableEdge {
         this.to = to;
     }
 
-    public SyllableEdge(String pinyin) {
-        this.pinyin = pinyin;
+    public double getLength() {
+        return length;
     }
 
-    public String getPinyin() {
-        return pinyin;
+    public void setLength(double length) {
+        this.length = length;
     }
 
-    public SyllableNode getFrom() {
-        return from;
+    public SyllableNode getTo() {
+        return to;
     }
 }

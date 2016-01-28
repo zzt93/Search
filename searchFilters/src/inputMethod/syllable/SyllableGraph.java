@@ -1,10 +1,13 @@
-package inputMethod.graph;
+package inputMethod.syllable;
 
-import inputMethod.NotPinyinException;
-import inputMethod.PinyinTree;
+import inputMethod.lexicon.LexiconGraph;
+import inputMethod.lexicon.LexiconNode;
+import inputMethod.pinyin.NotPinyinException;
+import inputMethod.pinyin.PinyinTree;
 import util.TreeIterator;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by zzt on 1/27/16.
@@ -36,24 +39,50 @@ public class SyllableGraph {
         SyllableNode last = possibleNoOutEdgeNode.get(possibleNoOutEdgeNode.size() - 1);
         assert last.getEnd() == input.length();
         addEdge(possibleNoOutEdgeNode);
-        removeInvalid(last);
+        removeInvalid(start);
     }
 
-    private void removeInvalid(SyllableNode last) {
-        ArrayList<SyllableNode> nodes = new ArrayList<>();
-
-        backTrace(last, nodes);
-
+    private void removeInvalid(SyllableNode start) {
+        boolean end = findEnd(start);
+        assert end;
+        removeNotEnd(start);
     }
 
-    private void backTrace(SyllableNode last, ArrayList<SyllableNode> nodes) {
-        if (last.getEnd() == START_INDEX) {
-            nodes.add(last);
+    private void removeNotEnd(SyllableNode start) {
+        ArrayList<SyllableEdge> out = start.getOut();
+        for (Iterator<SyllableEdge> iter = out.iterator(); iter.hasNext(); ) {
+            SyllableNode node = iter.next().getTo();
+            if (node.isCanExit()) {
+                removeNotEnd(node);
+            } else {
+                iter.remove();
+            }
         }
-        for (SyllableEdge edge : last.getIn()) {
-            SyllableNode from = edge.getFrom();
-            backTrace(from, nodes);
+    }
+
+    private boolean findEnd(SyllableNode now) {
+        if (isEnd(now)) {
+            now.setCanExit(true);
+            return true;
         }
+        boolean res = false;
+        for (SyllableEdge edge : now.getOut()) {
+            SyllableNode to = edge.getTo();
+            boolean end = findEnd(to);
+            if (end) {
+                now.setCanExit(true);
+                res = true;
+            }
+        }
+        return res;
+    }
+
+    private boolean isStart(SyllableNode now) {
+        return now.getEnd() == START_INDEX;
+    }
+
+    private boolean isEnd(SyllableNode now) {
+        return now.getEnd() == input.length();
     }
 
     /**
@@ -74,14 +103,19 @@ public class SyllableGraph {
         for (int i = 0; i < possibleNoOutEdgeNode.size(); i++) {
             SyllableNode node = possibleNoOutEdgeNode.get(i);
             if (node.noOutEdge()) {
+                OUT:
                 for (int later = i + 1; later < possibleNoOutEdgeNode.size(); later++) {
                     SyllableNode to = possibleNoOutEdgeNode.get(later);
                     String tmp = input.substring(node.getEnd(), to.getEnd());
-                    if (PinyinTree.isValidSinglePinyin(tmp)) {
-                        node.addOut(new SyllableEdge(node, to));
-                    } else {
-                        // if it can't be a syllable with closest char, it will not be with further one
-                        break;
+                    switch (PinyinTree.isValidSinglePinyin(tmp)) {
+                        case VALID:
+                            node.addOut(new SyllableEdge(node, to));
+                            break;
+                        case NEED_MORE:
+                            // if it can't be a syllable with closest char, it will not be with further one
+                            break;
+                        case INVALID:
+                            break OUT;
                     }
                 }
             }
@@ -90,9 +124,10 @@ public class SyllableGraph {
 
 
     /**
-     * postCondition: it will find all nodes of this graph
+     * postCondition: it will find all possible nodes of this graph(may be more than actual)
      *
-     * @param input                 input String to analysis
+     * @param input input String to analysis
+     *
      * @throws NotPinyinException
      */
     private ArrayList<SyllableNode> constructBasic(String input) throws NotPinyinException {
@@ -113,7 +148,6 @@ public class SyllableGraph {
                     possibleNoOutEdgeNode.add(to);
                     SyllableEdge edge = new SyllableEdge(now, to);
                     now.addOut(edge);
-                    to.addIn(edge);
                 }
             } else {
                 if (to == null) {
@@ -124,7 +158,49 @@ public class SyllableGraph {
                 i--;
             }
         }
+        if (!iterator.canExit()) {
+            throw new NotPinyinException(input);
+        }
 
         return possibleNoOutEdgeNode;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("SyllableGraph{").append(input).append("}\n");
+        describe(start, sb);
+        return sb.toString();
+    }
+
+    private void describe(SyllableNode start, StringBuilder sb) {
+        if (isEnd(start)) {
+            return;
+        }
+        for (SyllableEdge edge : start.getOut()) {
+            SyllableNode to = edge.getTo();
+            sb.append(getSyllable(start.getEnd(), to.getEnd())).append(" ");
+            describe(to, sb);
+        }
+    }
+
+    private String getSyllable(int end, int end1) {
+        return input.substring(end, end1);
+    }
+
+    public LexiconGraph toLexicon() {
+        LexiconGraph res = new LexiconGraph();
+        toLexiconRecursive(start, res.getStart());
+        return res;
+    }
+
+    private void toLexiconRecursive(SyllableNode syllableNode, LexiconNode start) {
+        if (isEnd(syllableNode)){
+            return;
+        }
+        for (SyllableEdge edge : syllableNode.getOut()) {
+            SyllableNode to = edge.getTo();
+            String syllable = getSyllable(syllableNode.getEnd(), to.getEnd());
+
+        }
     }
 }

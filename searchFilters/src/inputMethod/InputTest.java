@@ -1,6 +1,7 @@
 package inputMethod;
 
-import inputMethod.graph.SyllableGraph;
+import inputMethod.pinyin.NotPinyinException;
+import inputMethod.syllable.SyllableGraph;
 import util.MyIn;
 
 /**
@@ -12,5 +13,12 @@ public class InputTest {
 
     public static void main(String[] args) {
         MyIn in = new MyIn(System.in);
+        while (in.hasNext()) {
+            try {
+                System.out.println(new SyllableGraph(in.nextLine()));
+            } catch (NotPinyinException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
