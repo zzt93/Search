@@ -19,7 +19,8 @@ public class Utf8String {
     @Override
     public String toString() {
         try {
-            return "Utf8String{" +
+            return "Utf8String(" + string.length() +
+                    "){" +
                     "" + string +  "=" + Arrays.toString(string.getBytes(UTF_8)) +
                     "=" + toHex(string) +
                     "}";
@@ -39,7 +40,7 @@ public class Utf8String {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Utf8String("我"));
+        System.out.println(new Utf8String("我是"));
         System.out.println(new Utf8String("沃"));
         System.out.println(new Utf8String("瓦"));
     }

@@ -1,12 +1,12 @@
 package inputMethod.syllable;
 
-import inputMethod.lexicon.LexiconGraph;
-import inputMethod.lexicon.LexiconNode;
+import inputMethod.lexicon.*;
 import inputMethod.pinyin.NotPinyinException;
 import inputMethod.pinyin.PinyinTree;
-import util.TreeIterator;
+import mis.TreeIterator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -19,6 +19,7 @@ public class SyllableGraph {
     public static final int START_INDEX = 0;
     SyllableNode start;
     private final String input;
+    private ArrayList<SyllableNode> possibleNoOutEdgeNode;
 
     public SyllableGraph(String string) throws NotPinyinException {
         input = string;
@@ -35,7 +36,7 @@ public class SyllableGraph {
             System.err.println(this.getClass().getName() + "input is null");
             return;
         }
-        ArrayList<SyllableNode> possibleNoOutEdgeNode = constructBasic(input);
+        possibleNoOutEdgeNode = constructBasic(input);
         SyllableNode last = possibleNoOutEdgeNode.get(possibleNoOutEdgeNode.size() - 1);
         assert last.getEnd() == input.length();
         addEdge(possibleNoOutEdgeNode);
@@ -189,18 +190,70 @@ public class SyllableGraph {
 
     public LexiconGraph toLexicon() {
         LexiconGraph res = new LexiconGraph();
-        toLexiconRecursive(start, res.getStart());
+        ArrayList<SyllableNode> nodes = new ArrayList<>();
+        nodes.add(start);
+        nodes.addAll(possibleNoOutEdgeNode);
+        makeComplete(nodes);
+        HashMap<SyllableNode, LexiconNode> nodeMap = new HashMap<>();
+        toLexiconRecursive(start, res.getStart(), nodeMap);
+        // both not have the start of graph, so should have the same size
+        assert nodeMap.size() == possibleNoOutEdgeNode.size();
+        res.setNodes(nodeMap.values());
         return res;
     }
 
-    private void toLexiconRecursive(SyllableNode syllableNode, LexiconNode start) {
-        if (isEnd(syllableNode)){
+    /**
+     * make every node has edge to later node(compared by their index)
+     * i.e. the ith node should have n - i - 1 out edge(i start from 0)
+     *
+     * @param nodes nodes list in the order of their index of input
+     */
+    private void makeComplete(ArrayList<SyllableNode> nodes) {
+        Dictionary dictionary = HashDictionary.getInstance();
+        for (int i = 0; i < nodes.size(); i++) {
+            SyllableNode now = nodes.get(i);
+            if (now.getOut().size() < nodes.size() - i - 1) {
+                for (int x = i + now.getOut().size() + 1; x < nodes.size(); x++) {
+                    SyllableNode to = nodes.get(x);
+                    String syllable = getSyllable(now.getEnd(), to.getEnd());
+                    ArrayList<String> lexicons = dictionary.find(syllable);
+                    if (lexicons != null) {
+                        now.addOut(new SyllableEdge(now, to));
+                    }
+                }
+            }
+        }
+    }
+
+    private void toLexiconRecursive(SyllableNode syllableNow, LexiconNode lexiconNow, HashMap<SyllableNode, LexiconNode> nodeMap) {
+        if (isEnd(syllableNow)) {
+            assert nodeMap.get(syllableNow) == lexiconNow;
+            lexiconNow.setVisited(true);
             return;
         }
-        for (SyllableEdge edge : syllableNode.getOut()) {
-            SyllableNode to = edge.getTo();
-            String syllable = getSyllable(syllableNode.getEnd(), to.getEnd());
+        Dictionary dictionary = HashDictionary.getInstance();
+        LanguageModel model = LanguageModel.getInstance();
 
+        for (SyllableEdge edge : syllableNow.getOut()) {
+            SyllableNode to = edge.getTo();
+            LexiconNode node;
+            if (nodeMap.containsKey(to)) {
+                node = nodeMap.get(to);
+            } else {
+                node = new LexiconNode();
+                nodeMap.put(to, node);
+            }
+
+            String syllable = getSyllable(syllableNow.getEnd(), to.getEnd());
+            for (String s : dictionary.find(syllable)) {
+                lexiconNow.addOut(new LexiconEdge(
+                        new Lexicon(s, model.getRadio(syllable)), node));
+            }
+            if (node.isVisited()) {
+                continue;
+            }
+            toLexiconRecursive(to, node, nodeMap);
         }
+        lexiconNow.setVisited(true);
     }
 }

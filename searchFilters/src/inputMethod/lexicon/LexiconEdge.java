@@ -5,11 +5,29 @@ package inputMethod.lexicon;
  * <p>
  * Usage:
  */
-public class LexiconEdge {
+public class LexiconEdge implements Comparable<LexiconEdge> {
 
-    private String word;
+    private Lexicon word;
 
     private LexiconNode to;
+    private double length;
 
+    public LexiconEdge(Lexicon lexicon, LexiconNode node) {
+        word = lexicon;
+        length = - Math.log(word.getRatio());
+        to = node;
+    }
 
+    public Lexicon getWord() {
+        return word;
+    }
+
+    public LexiconNode getTo() {
+        return to;
+    }
+
+    @Override
+    public int compareTo(LexiconEdge o) {
+        return Double.compare(length, o.length);
+    }
 }

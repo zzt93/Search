@@ -1,8 +1,9 @@
 package inputMethod.pinyin;
 
-import util.MyIn;
-import util.TreeIterator;
-import util.TrieTree;
+import mis.Config;
+import mis.MyIn;
+import mis.TreeIterator;
+import mis.TrieTree;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class PinyinTree {
 
     static {
         try {
-            in = new MyIn("allPinyin");
+            in = Config.getPinyinStream();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

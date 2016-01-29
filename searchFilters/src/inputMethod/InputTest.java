@@ -2,7 +2,7 @@ package inputMethod;
 
 import inputMethod.pinyin.NotPinyinException;
 import inputMethod.syllable.SyllableGraph;
-import util.MyIn;
+import mis.MyIn;
 
 /**
  * Created by zzt on 1/27/16.
