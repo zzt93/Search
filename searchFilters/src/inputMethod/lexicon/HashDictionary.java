@@ -50,4 +50,9 @@ public class HashDictionary implements Dictionary{
     public ArrayList<String> find(String syllables) {
         return pinyinToWords.get(syllables);
     }
+
+    @Override
+    public boolean containsKey(String key) {
+        return pinyinToWords.containsKey(key);
+    }
 }

@@ -1,5 +1,7 @@
 package inputMethod.lexicon;
 
+import inputMethod.lm.HashLM;
+import inputMethod.lm.LanguageModel;
 import inputMethod.syllable.SyllableGraph;
 
 import java.util.Collection;
@@ -29,9 +31,26 @@ public class LexiconGraph {
     public String shortestPath() {
         setNotVisited(nodes);
         StringBuilder sb = new StringBuilder();
-        boolean finished = false;
-        shortestPathRecursive(start, sb, finished);
+        collapse();
         return sb.toString();
+    }
+
+    /**
+     * postCondition: only two vertices
+     */
+    private void collapse() {
+        LanguageModel lm = HashLM.getInstance();
+        for (LexiconEdge edge : start.getOut()) {
+            LexiconNode second = edge.getTo();
+            for (LexiconEdge e : second.getOut()) {
+                LexiconNode third = e.getTo();
+                start.addOut(new LexiconEdge(new Lexicon(edge.getPhrase() + e.getPhrase(), lm.getBigram("", "")),
+                        third));
+            }
+            /*
+            when all out vertices are visited, this node can be removed(except start and end)
+             */
+        }
     }
 
     public void setNotVisited(Collection<LexiconNode> nodes) {
@@ -40,20 +59,20 @@ public class LexiconGraph {
         }
     }
 
-    private void shortestPathRecursive(LexiconNode now, StringBuilder sb, boolean finished) {
-        if (now.isVisited() || finished) {
-            return;
-        }
-        for (LexiconEdge edge : now.getOut()) {
-            LexiconNode to = edge.getTo();
-            sb.append(edge.getWord());
-            if (to.isEnd()) {
-                finished = true;
-                return;
-            }
-            shortestPathRecursive(to, sb, finished);
-        }
-    }
+    //    private void shortestPathRecursive(LexiconNode now, StringBuilder sb, boolean finished) {
+    //        if (now.isVisited() || finished) {
+    //            return;
+    //        }
+    //        for (LexiconEdge edge : now.getOut()) {
+    //            LexiconNode to = edge.getTo();
+    //            sb.append(edge.getLexicon());
+    //            if (to.isEnd()) {
+    //                finished = true;
+    //                return;
+    //            }
+    //            shortestPathRecursive(to, sb, finished);
+    //        }
+    //    }
 
 
     public void setNodes(Collection<LexiconNode> nodes) {

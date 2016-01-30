@@ -7,19 +7,23 @@ package inputMethod.lexicon;
  */
 public class LexiconEdge implements Comparable<LexiconEdge> {
 
-    private Lexicon word;
+    private Lexicon lexicon;
 
     private LexiconNode to;
     private double length;
 
     public LexiconEdge(Lexicon lexicon, LexiconNode node) {
-        word = lexicon;
-        length = - Math.log(word.getRatio());
+        this.lexicon = lexicon;
+        length = - Math.log(this.lexicon.getRatio());
         to = node;
     }
 
-    public Lexicon getWord() {
-        return word;
+    public Lexicon getLexicon() {
+        return lexicon;
+    }
+
+    public String getPhrase() {
+        return lexicon.getWord();
     }
 
     public LexiconNode getTo() {

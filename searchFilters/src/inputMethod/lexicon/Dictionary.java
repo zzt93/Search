@@ -10,4 +10,6 @@ import java.util.ArrayList;
 public interface Dictionary {
 
     ArrayList<String> find(String syllables);
+
+    boolean containsKey(String key);
 }

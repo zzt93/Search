@@ -1,6 +1,8 @@
 package inputMethod.syllable;
 
 import inputMethod.lexicon.*;
+import inputMethod.lm.HashLM;
+import inputMethod.lm.LanguageModel;
 import inputMethod.pinyin.NotPinyinException;
 import inputMethod.pinyin.PinyinTree;
 import mis.TreeIterator;
@@ -198,6 +200,7 @@ public class SyllableGraph {
         toLexiconRecursive(start, res.getStart(), nodeMap);
         // both not have the start of graph, so should have the same size
         assert nodeMap.size() == possibleNoOutEdgeNode.size();
+        assert nodeMap.get(possibleNoOutEdgeNode.get(possibleNoOutEdgeNode.size() - 1)).isEnd();
         res.setNodes(nodeMap.values());
         return res;
     }
@@ -232,7 +235,7 @@ public class SyllableGraph {
             return;
         }
         Dictionary dictionary = HashDictionary.getInstance();
-        LanguageModel model = LanguageModel.getInstance();
+        LanguageModel model = HashLM.getInstance();
 
         for (SyllableEdge edge : syllableNow.getOut()) {
             SyllableNode to = edge.getTo();
@@ -247,7 +250,7 @@ public class SyllableGraph {
             String syllable = getSyllable(syllableNow.getEnd(), to.getEnd());
             for (String s : dictionary.find(syllable)) {
                 lexiconNow.addOut(new LexiconEdge(
-                        new Lexicon(s, model.getRadio(syllable)), node));
+                        new Lexicon(s, model.getUnigram(syllable)), node));
             }
             if (node.isVisited()) {
                 continue;
