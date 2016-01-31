@@ -8,6 +8,6 @@ package inputMethod.pinyin;
 public class NotPinyinException extends Exception {
 
     public NotPinyinException(String message) {
-        super("english or invalid pinyin" + message);
+        super("english or invalid pinyin:" + message);
     }
 }

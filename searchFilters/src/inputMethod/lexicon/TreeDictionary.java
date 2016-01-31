@@ -54,7 +54,12 @@ public class TreeDictionary implements Dictionary {
 
     @Override
     public ArrayList<String> find(String syllables) {
-        ArrayList<Lexicon> words = new ArrayList<>();
+        ArrayList<String> words = new ArrayList<>();
         return words;
+    }
+
+    @Override
+    public boolean containsWord(String word) {
+        return false;
     }
 }

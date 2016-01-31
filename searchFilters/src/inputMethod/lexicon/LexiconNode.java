@@ -1,6 +1,6 @@
 package inputMethod.lexicon;
 
-import java.util.PriorityQueue;
+import java.util.ArrayList;
 
 /**
  * Created by zzt on 1/28/16.
@@ -11,9 +11,9 @@ public class LexiconNode {
 
     private boolean visited = false;
 
-    private PriorityQueue<LexiconEdge> out = new PriorityQueue<>();
+    private ArrayList<LexiconEdge> out = new ArrayList<>();
 
-    public void addOut(LexiconEdge lexiconEdge) {
+    public void addOutEdge(LexiconEdge lexiconEdge) {
         out.add(lexiconEdge);
     }
 
@@ -25,7 +25,7 @@ public class LexiconNode {
         return out.isEmpty();
     }
 
-    public PriorityQueue<LexiconEdge> getOut() {
+    public ArrayList<LexiconEdge> getOut() {
         return out;
     }
 

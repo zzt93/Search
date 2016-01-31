@@ -58,6 +58,7 @@ public class SyllableGraph {
             if (node.isCanExit()) {
                 removeNotEnd(node);
             } else {
+                possibleNoOutEdgeNode.remove(node);
                 iter.remove();
             }
         }
@@ -153,10 +154,12 @@ public class SyllableGraph {
                     now.addOut(edge);
                 }
             } else {
-                if (to == null) {
+                if (to == null) {// can't exit now
                     throw new NotPinyinException(input);
                 }
+                // new start position
                 now = to;
+                to = null;
                 iterator = PinyinTree.iterator();
                 i--;
             }
@@ -186,8 +189,8 @@ public class SyllableGraph {
         }
     }
 
-    private String getSyllable(int end, int end1) {
-        return input.substring(end, end1);
+    private String getSyllable(int start, int end) {
+        return input.substring(start, end);
     }
 
     public LexiconGraph toLexicon() {
@@ -201,7 +204,7 @@ public class SyllableGraph {
         // both not have the start of graph, so should have the same size
         assert nodeMap.size() == possibleNoOutEdgeNode.size();
         assert nodeMap.get(possibleNoOutEdgeNode.get(possibleNoOutEdgeNode.size() - 1)).isEnd();
-        res.setNodes(nodeMap.values());
+//        res.setNodes(nodeMap.values());
         return res;
     }
 
@@ -248,9 +251,13 @@ public class SyllableGraph {
             }
 
             String syllable = getSyllable(syllableNow.getEnd(), to.getEnd());
-            for (String s : dictionary.find(syllable)) {
-                lexiconNow.addOut(new LexiconEdge(
-                        new Lexicon(s, model.getUnigram(syllable)), node));
+            for (String word : dictionary.find(syllable)) {
+                double unigram = model.getUnigram(word);
+                if (unigram < LanguageModel.UNIGRAM_POSSIBILITY_THRESHOLD) {
+                    continue;
+                }
+                lexiconNow.addOutEdge(new LexiconEdge(
+                        new Lexicon(word, unigram), node));
             }
             if (node.isVisited()) {
                 continue;

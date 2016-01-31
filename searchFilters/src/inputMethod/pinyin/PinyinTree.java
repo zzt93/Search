@@ -68,6 +68,6 @@ public class PinyinTree {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        System.out.println(new PinyinTree());
+        System.out.println(PinyinTree.isValidSinglePinyin("ng"));
     }
 }

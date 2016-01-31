@@ -5,7 +5,7 @@ package inputMethod.lexicon;
  * <p>
  * Usage:
  */
-public class Lexicon {
+public class Lexicon implements Comparable<Lexicon> {
 
     private String word;
     private double ratio;
@@ -21,5 +21,18 @@ public class Lexicon {
 
     public double getRatio() {
         return ratio;
+    }
+
+    @Override
+    public String toString() {
+        return "Lexicon{" +
+                "word='" + word + '\'' +
+                ", ratio=" + ratio +
+                '}';
+    }
+
+    @Override
+    public int compareTo(Lexicon o) {
+        return - Double.compare(ratio, o.getRatio());
     }
 }

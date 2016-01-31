@@ -3,8 +3,12 @@ package inputMethod.lexicon;
 import inputMethod.lm.HashLM;
 import inputMethod.lm.LanguageModel;
 import inputMethod.syllable.SyllableGraph;
+import mis.Selection;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 
 /**
  * Created by zzt on 1/28/16.
@@ -28,11 +32,21 @@ public class LexiconGraph {
      *
      * @see SyllableGraph#toLexicon()
      */
-    public String shortestPath() {
-        setNotVisited(nodes);
-        StringBuilder sb = new StringBuilder();
+    public ArrayList<Lexicon> shortestPath(int resultSize) {
+        ArrayList<Lexicon> res = new ArrayList<>();
         collapse();
-        return sb.toString();
+        ArrayList<LexiconEdge> out = start.getOut();
+        if (out.size() > resultSize) {
+            Selection.selection(out, resultSize);
+        }
+        System.out.println(out.size());
+        for (int i = 0; i < resultSize && i < out.size(); i++) {
+            LexiconEdge edge = out.get(i);
+            assert edge.getTo().isEnd();
+            res.add(edge.getLexicon());
+        }
+        Collections.sort(res);
+        return res;
     }
 
     /**
@@ -40,16 +54,36 @@ public class LexiconGraph {
      */
     private void collapse() {
         LanguageModel lm = HashLM.getInstance();
-        for (LexiconEdge edge : start.getOut()) {
-            LexiconNode second = edge.getTo();
-            for (LexiconEdge e : second.getOut()) {
-                LexiconNode third = e.getTo();
-                start.addOut(new LexiconEdge(new Lexicon(edge.getPhrase() + e.getPhrase(), lm.getBigram("", "")),
-                        third));
-            }
+        boolean notFinish = true;
+        while (notFinish) {
+            ArrayList<LexiconEdge> tmp = new ArrayList<>();
+            notFinish = false;
+            for (Iterator<LexiconEdge> iter = start.getOut().iterator(); iter.hasNext(); ) {
+                LexiconEdge edge = iter.next();
+                LexiconNode second = edge.getTo();
+                boolean isEnd = true;
+                for (LexiconEdge next : second.getOut()) {
+                    isEnd = false;
+                    LexiconNode third = next.getTo();
+                    double bigram = lm.getBigram(edge.getPhrase(), next.getPhrase());
+                    if (bigram < LanguageModel.BIGRAM_POSSIBILITY_THRESHOLD) {
+                        continue;
+                    }
+                    tmp.add(new LexiconEdge(
+                            new Lexicon(edge.getPhrase() + next.getPhrase(), bigram),
+                            third));
+                }
             /*
-            when all out vertices are visited, this node can be removed(except start and end)
+            when all out edges are visited, this node can be removed(except start and end) by removing
+            the edge to it
              */
+                assert isEnd == second.isEnd();
+                if (!isEnd) {
+                    iter.remove();
+                    notFinish = true;
+                }
+            }
+            start.getOut().addAll(tmp);
         }
     }
 
