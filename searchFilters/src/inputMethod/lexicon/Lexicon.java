@@ -31,6 +31,7 @@ public class Lexicon implements Comparable<Lexicon> {
                 '}';
     }
 
+
     @Override
     public int compareTo(Lexicon o) {
         return - Double.compare(ratio, o.getRatio());

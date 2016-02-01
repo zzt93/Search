@@ -9,6 +9,7 @@ import inputMethod.pinyin.PinyinTree;
 import inputMethod.syllable.SyllableGraph;
 import mis.MyIn;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
@@ -18,10 +19,10 @@ import java.util.ArrayList;
  */
 public class InputTest {
 
-    public static void main(String[] args) {
-        MyIn in = new MyIn(System.in);
+    public static void main(String[] args) throws FileNotFoundException {
+        MyIn in = new MyIn("Input.test");
         initialSystem();
-        while (in.hasNext()) {
+        while (in.hasNextLine()) {
             try {
                 ArrayList<Lexicon> lexicons = getLexicons(in.nextLine());
                 lexicons.forEach(System.out::println);
@@ -43,6 +44,8 @@ public class InputTest {
         int i = PinyinTree.END_SYMBOL;
         HashDictionary.getInstance();
         HashLM.getInstance();
+        System.out.println("------------------------");
         System.out.println("initialization done");
+        System.out.println("------------------------");
     }
 }

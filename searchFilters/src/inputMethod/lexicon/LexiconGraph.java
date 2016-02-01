@@ -5,10 +5,7 @@ import inputMethod.lm.LanguageModel;
 import inputMethod.syllable.SyllableGraph;
 import mis.Selection;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Created by zzt on 1/28/16.
@@ -18,7 +15,7 @@ import java.util.Iterator;
 public class LexiconGraph {
 
     LexiconNode start = new LexiconNode();
-    private Collection<LexiconNode> nodes;
+//    private Collection<LexiconNode> nodes;
 
     public LexiconNode getStart() {
         return start;
@@ -51,27 +48,37 @@ public class LexiconGraph {
 
     /**
      * postCondition: only two vertices
+     * @see SyllableGraph#addEdge(ArrayList)
      */
     private void collapse() {
         LanguageModel lm = HashLM.getInstance();
         boolean notFinish = true;
+        HashSet<String> duplicateCheck = new HashSet<>();
+
         while (notFinish) {
             ArrayList<LexiconEdge> tmp = new ArrayList<>();
             notFinish = false;
-            for (Iterator<LexiconEdge> iter = start.getOut().iterator(); iter.hasNext(); ) {
-                LexiconEdge edge = iter.next();
+            for (ListIterator<LexiconEdge> iter = start.getOut().listIterator(start.getOut().size()); iter.hasPrevious(); ) {
+                // visiting list in reversed order for access longer word first
+                // @see SyllableGraph#addEdge(ArrayList)
+                LexiconEdge edge = iter.previous();
                 LexiconNode second = edge.getTo();
+                // already used phrase
+                duplicateCheck.add(edge.getPhrase());
                 boolean isEnd = true;
                 for (LexiconEdge next : second.getOut()) {
+                    String word = edge.getPhrase() + next.getPhrase();
+                    if (duplicateCheck.contains(word)) {
+                        continue;
+                    }
                     isEnd = false;
                     LexiconNode third = next.getTo();
                     double bigram = lm.getBigram(edge.getPhrase(), next.getPhrase());
                     if (bigram < LanguageModel.BIGRAM_POSSIBILITY_THRESHOLD) {
                         continue;
                     }
-                    tmp.add(new LexiconEdge(
-                            new Lexicon(edge.getPhrase() + next.getPhrase(), bigram),
-                            third));
+                    Lexicon lexicon = new Lexicon(word, bigram);
+                    tmp.add(new LexiconEdge(lexicon, third));
                 }
             /*
             when all out edges are visited, this node can be removed(except start and end) by removing
@@ -109,7 +116,7 @@ public class LexiconGraph {
     //    }
 
 
-    public void setNodes(Collection<LexiconNode> nodes) {
-        this.nodes = nodes;
-    }
+//    public void setNodes(Collection<LexiconNode> nodes) {
+//        this.nodes = nodes;
+//    }
 }

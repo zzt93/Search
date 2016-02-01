@@ -116,7 +116,6 @@ public class SyllableGraph {
                             node.addOut(new SyllableEdge(node, to));
                             break;
                         case NEED_MORE:
-                            // if it can't be a syllable with closest char, it will not be with further one
                             break;
                         case INVALID:
                             break OUT;
@@ -154,10 +153,34 @@ public class SyllableGraph {
                     now.addOut(edge);
                 }
             } else {
-                if (to == null) {// can't exit now
-                    throw new NotPinyinException(input);
+                if (to == null) {
+                    // special pattern 'x[a|e|i]n'g[(ong)|(u?)]', e.g. fan'guo
+                    if ((c == 'u' && i >= 4)) {
+                        String ng = input.substring(i - 2, i);
+                        if (ng.equals("ng")) {
+                            int last = possibleNoOutEdgeNode.size() - 1;
+                            assert possibleNoOutEdgeNode.get(last).getEnd() == i;
+                            now = possibleNoOutEdgeNode.get(last - 1);
+                            // back point to 'g'
+                            i -= 2;
+                            continue;
+                        }
+                    } else if ((c == 'n' && i >= 5)) {
+                        String ng = input.substring(i - 3, i);
+                        if (ng.equals("ngo")) {
+                            int last = possibleNoOutEdgeNode.size() - 1;
+                            assert possibleNoOutEdgeNode.get(last).getEnd() == i - 1;
+                            now = possibleNoOutEdgeNode.get(last - 1);
+                            // back point to 'g'
+                            i -= 3;
+                            continue;
+                        }
+                    }
+                    // can't exit now
+                    throw new NotPinyinException(
+                            input + ": " + input.substring(now.getEnd(), i));
                 }
-                // new start position
+                // create new start position when have to
                 now = to;
                 to = null;
                 iterator = PinyinTree.iterator();
@@ -204,7 +227,7 @@ public class SyllableGraph {
         // both not have the start of graph, so should have the same size
         assert nodeMap.size() == possibleNoOutEdgeNode.size();
         assert nodeMap.get(possibleNoOutEdgeNode.get(possibleNoOutEdgeNode.size() - 1)).isEnd();
-//        res.setNodes(nodeMap.values());
+        // res.setNodes(nodeMap.values());
         return res;
     }
 
@@ -224,6 +247,7 @@ public class SyllableGraph {
                     String syllable = getSyllable(now.getEnd(), to.getEnd());
                     ArrayList<String> lexicons = dictionary.find(syllable);
                     if (lexicons != null) {
+                        System.out.println("new syllable: " + syllable);
                         now.addOut(new SyllableEdge(now, to));
                     }
                 }

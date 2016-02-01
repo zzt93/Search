@@ -128,7 +128,6 @@ public class HashLM implements LanguageModel {
                 delta = dict.get(phrase2);
             }
         }
-        // TODO: 1/30/16 test here
         return getUnigram(phrase1) * getUnigram(phrase2) * (delta);
     }
 
@@ -136,8 +135,8 @@ public class HashLM implements LanguageModel {
         HashLM instance = HashLM.getInstance();
         MyIn in = new MyIn(System.in);
         while (in.hasNextLine()) {
-            System.out.println(instance.getUnigram(in.nextLine()));
-//            System.out.println(instance.getBigram(in.nextLine(), in.nextLine()));
+//            System.out.println(instance.getUnigram(in.nextLine()));
+            System.out.println(instance.getBigram(in.nextLine(), in.nextLine()));
         }
     }
 }
