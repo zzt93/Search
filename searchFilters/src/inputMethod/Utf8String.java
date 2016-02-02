@@ -1,5 +1,7 @@
 package inputMethod;
 
+import mis.MyIn;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
@@ -19,9 +21,11 @@ public class Utf8String {
     @Override
     public String toString() {
         try {
-            return "Utf8String(" + string.length() +
+            return "Utf8String(len=" + string.length() +
                     "){" +
-                    "" + string +  "=" + Arrays.toString(string.getBytes(UTF_8)) +
+                    "" + string +
+                    "=" + Arrays.toString(string.getBytes(UTF_8)) +
+                    "=" + Arrays.toString(string.getBytes()) +
                     "=" + toHex(string) +
                     "}";
         } catch (UnsupportedEncodingException e) {
@@ -39,9 +43,26 @@ public class Utf8String {
         return sb.toString();
     }
 
+    public void testChar() {
+        for (char c : string.toCharArray()) {
+            System.out.print(c + " ");
+            System.out.print((int)c + " ");
+            System.out.println(c < 127);
+        }
+    }
+
     public static void main(String[] args) {
-        System.out.println(new Utf8String("我是"));
-        System.out.println(new Utf8String("沃"));
-        System.out.println(new Utf8String("瓦"));
+        String original = "A" + "\uD840" + "\u00f1" + "\u00fc" + "C";
+        testUTFString(original);
+        MyIn in = new MyIn(System.in);
+        while (in.hasNextLine()) {
+            testUTFString(in.nextLine());
+        }
+    }
+
+    private static void testUTFString(String in) {
+        Utf8String x = new Utf8String(in);
+        System.out.println(x);
+        x.testChar();
     }
 }

@@ -29,7 +29,7 @@ public class LexiconGraph {
      *
      * @see SyllableGraph#toLexicon()
      */
-    public ArrayList<Lexicon> shortestPath(int resultSize) {
+    public ArrayList<Lexicon> bestPath(int resultSize) {
         ArrayList<Lexicon> res = new ArrayList<>();
         collapse();
         ArrayList<LexiconEdge> out = start.getOut();
