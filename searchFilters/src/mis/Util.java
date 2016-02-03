@@ -6,7 +6,8 @@ package mis;
  * Usage:
  */
 public class Util {
-    public static int getHashCapacity(String num) {
-        return (int) (Integer.parseInt(num) * 1.3);
+    public static int getHashMapCapacity(int num) {
+        return (int) (num * 1.3);
     }
+
 }

@@ -1,12 +1,12 @@
-package inputMethod;
+package searchPrompt.inputMethod;
 
-import inputMethod.lexicon.HashDictionary;
-import inputMethod.lexicon.Lexicon;
-import inputMethod.lexicon.LexiconGraph;
-import inputMethod.lm.HashLM;
-import inputMethod.pinyin.NotPinyinException;
-import inputMethod.pinyin.PinyinTree;
-import inputMethod.syllable.SyllableGraph;
+import searchPrompt.inputMethod.lexicon.HashDictionary;
+import searchPrompt.inputMethod.lexicon.Lexicon;
+import searchPrompt.inputMethod.lexicon.LexiconGraph;
+import searchPrompt.inputMethod.lm.HashLM;
+import searchPrompt.inputMethod.pinyin.NotPinyinException;
+import searchPrompt.inputMethod.pinyin.PinyinTree;
+import searchPrompt.inputMethod.syllable.SyllableGraph;
 import mis.MyIn;
 
 import java.io.FileNotFoundException;

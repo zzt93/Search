@@ -1,4 +1,4 @@
-package inputMethod;
+package searchPrompt.inputMethod;
 
 import mis.MyIn;
 

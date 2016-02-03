@@ -1,4 +1,4 @@
-package inputMethod.pinyin;
+package searchPrompt.inputMethod.pinyin;
 
 import mis.Config;
 import mis.MyIn;

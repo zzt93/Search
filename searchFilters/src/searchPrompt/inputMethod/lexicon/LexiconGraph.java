@@ -1,8 +1,8 @@
-package inputMethod.lexicon;
+package searchPrompt.inputMethod.lexicon;
 
-import inputMethod.lm.HashLM;
-import inputMethod.lm.LanguageModel;
-import inputMethod.syllable.SyllableGraph;
+import searchPrompt.inputMethod.lm.HashLM;
+import searchPrompt.inputMethod.lm.LanguageModel;
+import searchPrompt.inputMethod.syllable.SyllableGraph;
 import mis.Selection;
 
 import java.util.*;

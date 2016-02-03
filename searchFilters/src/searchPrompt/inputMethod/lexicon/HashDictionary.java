@@ -1,4 +1,4 @@
-package inputMethod.lexicon;
+package searchPrompt.inputMethod.lexicon;
 
 import mis.Config;
 import mis.MyIn;

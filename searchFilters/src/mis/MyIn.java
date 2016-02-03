@@ -151,4 +151,8 @@ public class MyIn {
         }
         return res;
     }
+
+    public void close() {
+        scanner.close();
+    }
 }

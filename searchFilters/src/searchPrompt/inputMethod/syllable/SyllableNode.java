@@ -1,4 +1,4 @@
-package inputMethod.syllable;
+package searchPrompt.inputMethod.syllable;
 
 import java.util.ArrayList;
 

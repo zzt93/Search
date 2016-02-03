@@ -1,7 +1,7 @@
-package inputMethod.lm;
+package searchPrompt.inputMethod.lm;
 
-import inputMethod.lexicon.Dictionary;
-import inputMethod.lexicon.HashDictionary;
+import searchPrompt.inputMethod.lexicon.Dictionary;
+import searchPrompt.inputMethod.lexicon.HashDictionary;
 import mis.Config;
 import mis.MyIn;
 import mis.Util;
@@ -52,12 +52,12 @@ public class HashLM implements LanguageModel {
     private boolean parseLine(String line) {
         if (stage == 0) {
             if (line.substring(0, 8).equals("\\1-gram\\")) {
-                unigram = new HashMap<>(Util.getHashCapacity(line.substring(8)));
+                unigram = new HashMap<>(Util.getHashMapCapacity(Integer.parseInt(line.substring(8))));
                 stage++;
             }
         } else if (stage == 1) {
             if (line.substring(0, 8).equals("\\2-gram\\")) {
-                bigram = new HashMap<>(Util.getHashCapacity(line.substring(8)));
+                bigram = new HashMap<>(Util.getHashMapCapacity(Integer.parseInt(line.substring(8))));
                 stage++;
             } else {
                 //1-gram

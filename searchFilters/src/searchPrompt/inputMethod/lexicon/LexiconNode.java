@@ -1,4 +1,4 @@
-package inputMethod.lexicon;
+package searchPrompt.inputMethod.lexicon;
 
 import java.util.ArrayList;
 

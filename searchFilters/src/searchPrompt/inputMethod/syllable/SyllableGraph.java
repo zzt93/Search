@@ -1,10 +1,10 @@
-package inputMethod.syllable;
+package searchPrompt.inputMethod.syllable;
 
-import inputMethod.lexicon.*;
-import inputMethod.lm.HashLM;
-import inputMethod.lm.LanguageModel;
-import inputMethod.pinyin.NotPinyinException;
-import inputMethod.pinyin.PinyinTree;
+import searchPrompt.inputMethod.lexicon.*;
+import searchPrompt.inputMethod.lm.HashLM;
+import searchPrompt.inputMethod.lm.LanguageModel;
+import searchPrompt.inputMethod.pinyin.NotPinyinException;
+import searchPrompt.inputMethod.pinyin.PinyinTree;
 import mis.TreeIterator;
 
 import java.util.ArrayList;

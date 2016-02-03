@@ -1,4 +1,4 @@
-package inputMethod.pinyin;
+package searchPrompt.inputMethod.pinyin;
 
 /**
  * Created by zzt on 1/27/16.

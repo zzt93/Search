@@ -1,4 +1,4 @@
-package inputMethod.lm;
+package searchPrompt.inputMethod.lm;
 
 /**
  * Created by zzt on 1/29/16.

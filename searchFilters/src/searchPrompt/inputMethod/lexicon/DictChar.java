@@ -1,4 +1,4 @@
-package inputMethod.lexicon;
+package searchPrompt.inputMethod.lexicon;
 
 /**
  * Created by zzt on 1/29/16.

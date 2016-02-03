@@ -1,4 +1,4 @@
-package inputMethod.syllable;
+package searchPrompt.inputMethod.syllable;
 
 /**
  * Created by zzt on 1/27/16.

@@ -1,6 +1,6 @@
-package inputMethod.lexicon;
+package searchPrompt.inputMethod.lexicon;
 
-import inputMethod.pinyin.PinyinTree;
+import searchPrompt.inputMethod.pinyin.PinyinTree;
 import mis.Config;
 import mis.MyIn;
 import mis.TrieTree;
