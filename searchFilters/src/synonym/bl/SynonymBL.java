@@ -8,8 +8,8 @@ package synonym.bl;
 public class SynonymBL implements SynonymBLservice {
     /**
      * insert into DBMS to share?
-     * @param s
-     * @param synonym
+     * @param s User input
+     * @param synonym Input synonym
      */
     @Override
     public void addSynonym(String s, String synonym) {

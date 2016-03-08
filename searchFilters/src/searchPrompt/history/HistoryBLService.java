@@ -9,7 +9,20 @@ import java.util.ArrayList;
  */
 public interface HistoryBLService {
 
+    /**
+     * Related String:
+     *  - synonyms
+     *  - contain this string
+     *  - (optional) contain synonyms
+     *
+     * @param s User input string
+     * @return list of related string
+     */
     ArrayList<String> related(String s);
 
+    /**
+     * Add this to history
+     * @param s User input string
+     */
     void count(String s);
 }
