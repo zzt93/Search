@@ -9,6 +9,7 @@ import java.util.ArrayList;
  *
  * Represent a sentence syntax
  */
+@Deprecated
 public class SenStructure {
 
     ArrayList<SenComponent> structure = new ArrayList<>();

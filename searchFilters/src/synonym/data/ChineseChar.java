@@ -16,7 +16,6 @@ public class ChineseChar implements SentenceUnit {
     private String cChar;
     private ArrayList<PartOfSpeech> partOfSpeeches = new ArrayList<>();
 
-
     @Override
     public PartOfSpeech getType() {
         return null;

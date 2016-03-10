@@ -24,11 +24,11 @@ import java.util.HashMap;
  * 1. input some character
  * 2. find type for this character
  * 3. guess structure
- * 4. split by structure
- * 5. find synonym of every character/word
+ * 4. determine its part of speech by structure
+ * 5. find synonym of specific part of speech's character/word
  */
 public class SentenceSplit {
 
     private HashMap<ChineseChar, ArrayList<PartOfSpeech>> map = new HashMap<>();
-    private ArrayList<SenStructure> allStructures;
+//    private ArrayList<SenStructure> allStructures;
 }

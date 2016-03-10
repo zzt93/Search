@@ -5,5 +5,6 @@ package synonym.data;
  * <p>
  * Usage:
  */
+@Deprecated
 public class SenComponent {
 }
